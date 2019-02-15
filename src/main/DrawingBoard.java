@@ -24,19 +24,28 @@ public class DrawingBoard extends JPanel {
 	}
 	
 	public void addGObject(GObject gObject) {
-		// TODO: Implement this method.
+		gObjects.add(gObject);
+		repaint();
 	}
 	
 	public void groupAll() {
-		// TODO: Implement this method.
+		CompositeGObject groupGObject = new CompositeGObject();
+		for(GObject object: gObjects){
+			groupGObject.add(object);
+		}
+		clear();
+		addGObject(groupGObject);
+		repaint();
 	}
 
 	public void deleteSelected() {
-		// TODO: Implement this method.
+		gObjects.remove(target);
+		repaint();
 	}
 	
 	public void clear() {
-		// TODO: Implement this method.
+		gObjects.clear();
+		repaint();
 	}
 	
 	@Override
@@ -72,20 +81,46 @@ public class DrawingBoard extends JPanel {
 
 	class MAdapter extends MouseAdapter {
 
+
 		// TODO: You need some variables here
+		boolean selected = false;
+		int lastX;
+		int lastY;
 		
 		private void deselectAll() {
-			// TODO: Implement this method.
+			for (GObject object: gObjects) {
+				object.deselected();
+			}
+			selected = false;
+			target = null;
 		}
 		
 		@Override
 		public void mousePressed(MouseEvent e) {
-			// TODO: Implement this method.
+			deselectAll();
+			for (GObject object: gObjects) {
+				if(object.pointerHit(e.getX(), e.getY()) && !selected){
+					object.selected();
+					selected = true;
+					target = object;
+					lastX = e.getX();
+					lastY = e.getY();
+				}
+			}
+			repaint();
 		}
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			// TODO: Implement this method.
+			if(selected){
+				target.move(e.getX() - lastX, e.getY() - lastY);
+				lastX = e.getX();
+				lastY = e.getY();
+				repaint();
+			}
+
+
+
 		}
 	}
 	

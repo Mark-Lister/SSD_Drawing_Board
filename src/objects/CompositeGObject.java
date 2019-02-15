@@ -15,7 +15,8 @@ public class CompositeGObject extends GObject {
 	}
 
 	public void add(GObject gObject) {
-		// TODO: Implement this method.
+		gObjects.add(gObject);
+		recalculateRegion();
 	}
 
 	public void remove(GObject gObject) {
@@ -24,21 +25,51 @@ public class CompositeGObject extends GObject {
 
 	@Override
 	public void move(int dX, int dY) {
-		// TODO: Implement this method.
+		this.x += dX;
+		this.y += dY;
+		for (GObject object: gObjects) {
+			object.move(dX, dY);
+		}
 	}
 	
 	public void recalculateRegion() {
-		// TODO: Implement this method.
+		Integer minX = gObjects.get(0).x;
+		Integer minY = gObjects.get(0).y;
+		Integer maxX = minX + gObjects.get(0).width;
+		Integer maxY =  minY + gObjects.get(0).height;
+
+		for (GObject object: gObjects) {
+			if(object.x < minX){
+				minX = object.x;
+			}
+			if(object.y < minY){
+				minY = object.y;
+			}
+			if(object.x + object.width > maxX){
+				maxX = object.x + object.width;
+			}
+			if(object.y + object.height > maxY){
+				maxY = object.y + object.height;
+			}
+		}
+		this.x = minX;
+		this.y = minY;
+		this.width = maxX - minX;
+		this.height = maxY - minY;
 	}
 
 	@Override
 	public void paintObject(Graphics g) {
-		// TODO: Implement this method.
+		for (GObject object: gObjects) {
+			object.paintObject(g);
+		}
 	}
 
 	@Override
 	public void paintLabel(Graphics g) {
-		// TODO: Implement this method.
+		for (GObject object: gObjects) {
+			object.paintLabel(g);
+		}
 	}
 	
 }
